@@ -4,12 +4,12 @@ export default async function handler(req, res) {
   }
 
   const {
-    student_id,
-    pay_method,
-    pay_date,
+    user_id,
+    method,
+    orderId,
     discount,
-    final_price,
-    plan_code,
+    amount,
+    product,
   } = req.body;
 
   const AIRTABLE_TOKEN = 'pat4VAYd2zWRj4CJ0'; // ← 여기에 하드코딩
@@ -25,12 +25,12 @@ export default async function handler(req, res) {
         records: [
           {
             fields: {
-              student_id,
-              pay_method,
-              pay_date,
-              discount,
-              final_price,
-              plan_code,
+    user_id,
+    method,
+    orderId,
+    discount,
+    amount,
+    product,
             },
           },
         ],
