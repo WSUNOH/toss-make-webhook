@@ -18,7 +18,7 @@ export default async function handler(req, res) {
     const airtableRes = await fetch('https://api.airtable.com/v0/appmtIGM3sHsOGQJq/tblDDbTlebFUp1kt8', {
       method: 'POST',
       headers: {
-        Authorization: `Bearer ${AIRTABLE_TOKEN}`,
+        Authorization: `Bearer pat4VAYd2zWRj4CJ0`,
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
