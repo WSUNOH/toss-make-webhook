@@ -1,30 +1,47 @@
 export default async function handler(req, res) {
   if (req.method !== 'POST') {
-    return res.status(405).send('Method Not Allowed');
+    return res.status(405).json({ error: 'Only POST allowed' });
   }
 
-  try {
-    // 1. Toss에서 보낸 JSON 파싱
-    const data = await req.json(); // ❗ 핵심
+  const {
+    student_id,
+    pay_method,
+    pay_date,
+    discount,
+    final_price,
+    plan_code,
+  } = req.body;
 
-    // 2. Make.com Webhook 주소로 전달
-    const response = await fetch('https://hook.us2.make.com/rx8axk4e9b1s9f6cz9jenjblzktiv8y3', {
+  const AIRTABLE_TOKEN = 'pat4VAYd2zWRj4CJ0'; // ← 여기에 하드코딩
+
+  try {
+    const airtableRes = await fetch('https://api.airtable.com/v0/appmtIGM3sHsOGQJq/tblDDbTlebFUp1kt8', {
       method: 'POST',
       headers: {
-        'Content-Type': 'application/json'
+        Authorization: `Bearer ${AIRTABLE_TOKEN}`,
+        'Content-Type': 'application/json',
       },
-      body: JSON.stringify(data) // ❗ 반드시 JSON 형태로 보냄
+      body: JSON.stringify({
+        records: [
+          {
+            fields: {
+              student_id,
+              pay_method,
+              pay_date,
+              discount,
+              final_price,
+              plan_code,
+            },
+          },
+        ],
+      }),
     });
 
-    if (!response.ok) {
-      console.error('Make.com 전송 실패:', await response.text());
-      return res.status(500).send('Failed to send to Make');
-    }
+    const result = await airtableRes.json();
 
-    // 3. 완료 응답
-    return res.status(200).send('OK');
-  } catch (error) {
-    console.error('에러 발생:', error);
-    return res.status(500).send('Server Error');
+    return res.status(200).json({ success: true, airtable: result });
+  } catch (err) {
+    console.error(err);
+    return res.status(500).json({ error: 'Airtable save failed' });
   }
 }
