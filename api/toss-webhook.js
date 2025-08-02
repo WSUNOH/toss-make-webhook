@@ -12,13 +12,13 @@ export default async function handler(req, res) {
     product,
   } = req.body;
 
-  const AIRTABLE_TOKEN = 'pat4VAYd2zWRj4CJ0'; // ← 여기에 하드코딩
+  const AIRTABLE_TOKEN = process.env.AIRTABLE_TOKEN; // ← 여기에 하드코딩
 
   try {
     const airtableRes = await fetch('https://api.airtable.com/v0/appmtIGM3sHsOGQJq/tblDDbTlebFUp1kt8', {
       method: 'POST',
       headers: {
-        Authorization: `Bearer pat4VAYd2zWRj4CJ0`,
+        Authorization: `Bearer ${AIRTABLE_TOKEN}`,
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
